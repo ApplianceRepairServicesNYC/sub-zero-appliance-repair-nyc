@@ -1639,9 +1639,10 @@
             <button class="modal-close" data-close="modal">&times;</button>
         </div>
         <div class="modal-content">
-            <!-- Elfsight Google Reviews Widget -->
-            <script src="https://static.elfsight.com/platform/platform.js" async></script>
-            <div class="elfsight-app-2942fb52-4463-41bc-bc83-d831b9da6f0e" ></div>
+            <!-- Elfsight Google Reviews Widget - loaded on demand -->
+            <div id="elfsightContainer">
+                <div class="elfsight-app-2942fb52-4463-41bc-bc83-d831b9da6f0e"></div>
+            </div>
             <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #333;">
                 <button id="writeReviewBtn" style="background: linear-gradient(45deg, #c41e3a, #a01830); color: white; border: none; padding: 14px 35px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s;">Write Your Review</button>
             </div>
@@ -2042,10 +2043,24 @@
             }
             
             // Modal triggers
+            var elfsightLoaded = false;
+            function loadElfsightWidget() {
+                if (elfsightLoaded) return;
+                elfsightLoaded = true;
+                var script = document.createElement('script');
+                script.src = 'https://static.elfsight.com/platform/platform.js';
+                script.async = true;
+                document.head.appendChild(script);
+            }
+            
             document.querySelectorAll('.modal-trigger').forEach(function(trigger) {
                 trigger.addEventListener('click', function(e) {
                     e.preventDefault();
                     var modalId = this.getAttribute('data-modal');
+                    // Load Elfsight widget only when reviews modal is opened
+                    if (modalId === 'reviewsModal') {
+                        loadElfsightWidget();
+                    }
                     // Close services dropdown if open
                     var servicesMenu = document.getElementById('servicesMenu');
                     if (servicesMenu) servicesMenu.classList.remove('active');
