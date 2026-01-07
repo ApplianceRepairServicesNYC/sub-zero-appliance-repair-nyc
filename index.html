@@ -1641,8 +1641,48 @@
         <div class="modal-content">
             <!-- Elfsight Google Reviews Widget -->
             <script src="https://static.elfsight.com/platform/platform.js" async></script>
-            <div class="elfsight-app-2942fb52-4463-41bc-bc83-d831b9da6f0e" data-elfsight-app-lazy></div>
+            <div class="elfsight-app-2942fb52-4463-41bc-bc83-d831b9da6f0e" ></div>
+            <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #333;">
+                <button id="writeReviewBtn" style="background: linear-gradient(45deg, #c41e3a, #a01830); color: white; border: none; padding: 14px 35px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s;">Write Your Review</button>
+            </div>
             <p style="margin-bottom: 20px;"></p>
+        </div>
+    </div>
+
+    <!-- Write Review Form Modal -->
+    <div class="modal-card" id="writeReviewModal" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2>Write a Review</h2>
+            <button class="modal-close" data-close="modal">&times;</button>
+        </div>
+        <div class="modal-content">
+            <form id="reviewForm">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Your Name *</label>
+                    <input type="text" id="reviewName" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Your Rating *</label>
+                    <div id="starRating" style="display: flex; gap: 8px; font-size: 32px; cursor: pointer;">
+                        <span class="star" data-rating="1">☆</span>
+                        <span class="star" data-rating="2">☆</span>
+                        <span class="star" data-rating="3">☆</span>
+                        <span class="star" data-rating="4">☆</span>
+                        <span class="star" data-rating="5">☆</span>
+                    </div>
+                    <input type="hidden" id="reviewRating" value="0">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Your Review *</label>
+                    <textarea id="reviewText" required rows="5" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; resize: vertical; box-sizing: border-box;" placeholder="Tell us about your experience..."></textarea>
+                </div>
+                <button type="submit" style="width: 100%; background: linear-gradient(45deg, #c41e3a, #a01830); color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s;">Submit Review</button>
+            </form>
+            <div id="reviewThankYou" style="display: none; text-align: center; padding: 40px 20px;">
+                <div style="font-size: 60px; margin-bottom: 20px;">✓</div>
+                <h3 style="color: #1a1a2e; margin-bottom: 15px;">Thank You for Your Review!</h3>
+                <p style="color: #666; font-size: 16px;">Your review will be posted within 24 hours.</p>
+            </div>
         </div>
     </div>
 
@@ -1919,6 +1959,7 @@
             var epaModal = document.getElementById('epaModal');
             var compressorModal = document.getElementById('compressorModal');
             var reviewsModal = document.getElementById('reviewsModal');
+            var writeReviewModal = document.getElementById('writeReviewModal');
             
             function openModal(modalId) {
                 modalOverlay.classList.add('active');
@@ -1933,7 +1974,71 @@
                 epaModal.classList.remove('active');
                 if (compressorModal) compressorModal.classList.remove('active');
                 if (reviewsModal) reviewsModal.classList.remove('active');
+                if (writeReviewModal) writeReviewModal.classList.remove('active');
                 document.body.style.overflow = '';
+            }
+            
+            // Write Review Button
+            var writeReviewBtn = document.getElementById('writeReviewBtn');
+            if (writeReviewBtn) {
+                writeReviewBtn.addEventListener('click', function() {
+                    reviewsModal.classList.remove('active');
+                    openModal('writeReviewModal');
+                });
+            }
+            
+            // Star Rating
+            var stars = document.querySelectorAll('#starRating .star');
+            var ratingInput = document.getElementById('reviewRating');
+            stars.forEach(function(star) {
+                star.addEventListener('click', function() {
+                    var rating = this.getAttribute('data-rating');
+                    ratingInput.value = rating;
+                    stars.forEach(function(s, index) {
+                        s.textContent = index < rating ? '★' : '☆';
+                        s.style.color = index < rating ? '#FFD700' : '#333';
+                    });
+                });
+                star.addEventListener('mouseover', function() {
+                    var rating = this.getAttribute('data-rating');
+                    stars.forEach(function(s, index) {
+                        s.textContent = index < rating ? '★' : '☆';
+                        s.style.color = index < rating ? '#FFD700' : '#333';
+                    });
+                });
+                star.addEventListener('mouseout', function() {
+                    var currentRating = ratingInput.value;
+                    stars.forEach(function(s, index) {
+                        s.textContent = index < currentRating ? '★' : '☆';
+                        s.style.color = index < currentRating ? '#FFD700' : '#333';
+                    });
+                });
+            });
+            
+            // Review Form Submission
+            var reviewForm = document.getElementById('reviewForm');
+            var reviewThankYou = document.getElementById('reviewThankYou');
+            if (reviewForm) {
+                reviewForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (ratingInput.value === '0') {
+                        alert('Please select a rating');
+                        return;
+                    }
+                    reviewForm.style.display = 'none';
+                    reviewThankYou.style.display = 'block';
+                    setTimeout(function() {
+                        closeAllModals();
+                        reviewForm.style.display = 'block';
+                        reviewThankYou.style.display = 'none';
+                        reviewForm.reset();
+                        ratingInput.value = '0';
+                        stars.forEach(function(s) {
+                            s.textContent = '☆';
+                            s.style.color = '#333';
+                        });
+                    }, 3000);
+                });
             }
             
             // Modal triggers
