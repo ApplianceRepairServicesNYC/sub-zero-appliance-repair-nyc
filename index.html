@@ -1633,6 +1633,19 @@
         </div>
     </div>
 
+    <div class="modal-card" id="reviewsModal">
+        <div class="modal-header">
+            <h2>Customer Reviews</h2>
+            <button class="modal-close" data-close="modal">&times;</button>
+        </div>
+        <div class="modal-content">
+            <!-- Elfsight Google Reviews Widget -->
+            <script src="https://static.elfsight.com/platform/platform.js" async></script>
+            <div class="elfsight-app-2942fb52-4463-41bc-bc83-d831b9da6f0e" data-elfsight-app-lazy></div>
+            <p style="margin-bottom: 20px;"></p>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-main">
             <div class="footer-grid">
@@ -1673,6 +1686,7 @@
                     <a href="#" class="modal-trigger" data-modal="privacyModal">Privacy Policy</a>
                     <a href="#" class="modal-trigger" data-modal="termsModal">Terms of Service</a>
                     <a href="#" class="modal-trigger" data-modal="epaModal">EPA Certification</a>
+                    <a href="#" class="modal-trigger" data-modal="reviewsModal">Reviews</a>
                 </div>
                 <p>© 2025 Sub Zero Refrigerator Repair NYC. All Rights Reserved.</p>
                 <p>Licensed and Insured • Factory Certified Technicians • Same-Day Service Available</p>
@@ -1904,6 +1918,7 @@
             var termsModal = document.getElementById('termsModal');
             var epaModal = document.getElementById('epaModal');
             var compressorModal = document.getElementById('compressorModal');
+            var reviewsModal = document.getElementById('reviewsModal');
             
             function openModal(modalId) {
                 modalOverlay.classList.add('active');
@@ -1917,6 +1932,7 @@
                 termsModal.classList.remove('active');
                 epaModal.classList.remove('active');
                 if (compressorModal) compressorModal.classList.remove('active');
+                if (reviewsModal) reviewsModal.classList.remove('active');
                 document.body.style.overflow = '';
             }
             
